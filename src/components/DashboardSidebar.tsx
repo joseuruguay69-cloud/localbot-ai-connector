@@ -24,7 +24,6 @@ export function DashboardSidebar() {
   const settingsItems = [
     { title: t('sidebar.chatbot'), url: '/dashboard/chatbot', icon: Bot },
     { title: t('sidebar.business'), url: '/dashboard/business', icon: Store },
-    { title: t('sidebar.billing'), url: '/dashboard/billing', icon: CreditCard },
     { title: t('sidebar.settings'), url: '/dashboard/settings', icon: Settings },
   ];
 
