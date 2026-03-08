@@ -19,47 +19,163 @@ interface ChatWidgetProps {
   embedded?: boolean;
 }
 
-function findFAQMatch(input: string, faqs: FAQ[], biz: Business, t: (key: string, params?: Record<string, string>) => string): string | null {
-  const lower = input.toLowerCase();
-  const keywords: Record<string, string[]> = {
-    horario: ['horario', 'hora', 'abierto', 'abre', 'cierra', 'cuando', 'atienden', 'abren', 'orario', 'orari', 'aperto', 'chiude', 'aperti'],
-    reserva: ['reserva', 'reservar', 'mesa', 'turno', 'cita', 'agendar', 'pedir turno', 'prenotazione', 'prenotare', 'tavolo', 'appuntamento'],
-    precio: ['precio', 'cuanto', 'cuesta', 'sale', 'tarifa', 'costo', 'prezzo', 'quanto', 'costa'],
-    cancelar: ['cancelar', 'cambiar', 'modificar', 'anular', 'cancellare', 'modificare', 'annullare'],
-    vegetariano: ['vegetariano', 'vegano', 'vegetariana', 'vegana', 'sin carne', 'senza carne'],
-    ubicacion: ['donde', 'dirección', 'ubicación', 'llegar', 'están', 'direccion', 'dove', 'indirizzo', 'arrivare'],
-    humano: ['persona', 'humano', 'hablar con', 'agente', 'alguien', 'parlare con', 'operatore', 'umano'],
-    terraza: ['terraza', 'exterior', 'aire libre', 'terrazza', 'esterno'],
-    grupo: ['grupo', 'grandes', 'evento', 'eventos', 'gruppo', 'grandi', 'evento'],
-    sabado: ['sábado', 'sabado', 'sábados', 'sabados', 'sabato'],
-  };
+// Normalize text: lowercase, remove accents, punctuation
+function normalize(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[¿¡?!.,;:'"()]/g, '')
+    .trim();
+}
 
-  for (const k of keywords.humano) {
-    if (lower.includes(k)) return t('chat.humanEscalation');
+// Calculate word overlap score between two strings
+function wordOverlapScore(a: string, b: string): number {
+  const wordsA = normalize(a).split(/\s+/).filter(w => w.length > 2);
+  const wordsB = normalize(b).split(/\s+/).filter(w => w.length > 2);
+  if (wordsA.length === 0 || wordsB.length === 0) return 0;
+  
+  let matches = 0;
+  for (const wa of wordsA) {
+    for (const wb of wordsB) {
+      if (wa === wb || wa.includes(wb) || wb.includes(wa)) {
+        matches++;
+        break;
+      }
+    }
+  }
+  return matches / Math.max(wordsA.length, wordsB.length);
+}
+
+// Intent detection with multilingual keywords
+const intents: Record<string, string[]> = {
+  horario: ['horario', 'hora', 'abierto', 'abre', 'cierra', 'cuando', 'atienden', 'abren', 'cerrado', 'cierran',
+    'orario', 'orari', 'aperto', 'chiude', 'aperti', 'chiuso', 'quando',
+    'hours', 'open', 'close', 'schedule'],
+  reserva: ['reserva', 'reservar', 'mesa', 'turno', 'cita', 'agendar', 'pedir', 'quiero reservar', 'booking',
+    'prenotazione', 'prenotare', 'tavolo', 'appuntamento', 'vorrei prenotare', 'vorrei un appuntamento',
+    'book', 'appointment', 'reserve'],
+  precio: ['precio', 'cuanto', 'cuesta', 'sale', 'tarifa', 'costo', 'valor',
+    'prezzo', 'quanto', 'costa', 'listino', 'tariffa',
+    'price', 'cost', 'much'],
+  cancelar: ['cancelar', 'cambiar', 'modificar', 'anular', 'reprogramar',
+    'cancellare', 'cambiare', 'modificare', 'annullare', 'spostare',
+    'cancel', 'change', 'reschedule'],
+  vegetariano: ['vegetariano', 'vegano', 'vegetariana', 'vegana', 'sin carne', 'sin gluten', 'alergias', 'celiaco',
+    'senza carne', 'senza glutine', 'allergie', 'celiaco', 'vegetarian', 'vegan'],
+  ubicacion: ['donde', 'direccion', 'ubicacion', 'llegar', 'estan', 'como llego', 'mapa',
+    'dove', 'indirizzo', 'arrivare', 'posizione', 'trovarvi',
+    'where', 'location', 'address', 'directions'],
+  humano: ['persona', 'humano', 'hablar con', 'agente', 'alguien', 'encargado', 'responsable',
+    'parlare con', 'operatore', 'umano', 'qualcuno', 'responsabile',
+    'human', 'agent', 'person', 'talk to someone'],
+  terraza: ['terraza', 'exterior', 'aire libre', 'fuera',
+    'terrazza', 'esterno', 'aperto', 'fuori',
+    'terrace', 'outdoor', 'outside'],
+  grupo: ['grupo', 'grandes', 'evento', 'eventos', 'fiesta', 'cumpleanos', 'celebracion',
+    'gruppo', 'grandi', 'evento', 'eventi', 'festa', 'compleanno', 'celebrazione',
+    'group', 'party', 'event', 'celebration'],
+  sabado: ['sabado', 'sabados', 'sabato', 'saturday', 'fin de semana', 'fine settimana', 'weekend'],
+  saludo: ['hola', 'buenas', 'buenos', 'hey', 'hi', 'hello', 'ciao', 'salve', 'buongiorno', 'buonasera', 'buenas tardes', 'buenas noches', 'buen dia'],
+  gracias: ['gracias', 'grazie', 'thanks', 'thank you', 'perfecto', 'genial', 'ok', 'vale', 'ottimo', 'perfetto', 'bene'],
+  menu: ['menu', 'carta', 'platos', 'comida', 'comer', 'cenar', 'almorzar',
+    'piatti', 'mangiare', 'cenare', 'pranzare',
+    'food', 'dishes', 'eat', 'dinner', 'lunch'],
+  servicio: ['servicio', 'servicios', 'que ofrecen', 'que hacen', 'tratamiento', 'tratamientos',
+    'servizio', 'servizi', 'cosa offrite', 'cosa fate', 'trattamento', 'trattamenti',
+    'service', 'services', 'offer', 'treatments'],
+};
+
+function detectIntent(input: string): string | null {
+  const norm = normalize(input);
+  const words = norm.split(/\s+/);
+
+  for (const [intent, keywords] of Object.entries(intents)) {
+    for (const kw of keywords) {
+      if (kw.includes(' ')) {
+        if (norm.includes(kw)) return intent;
+      } else {
+        if (words.some(w => w === kw || w.includes(kw) || kw.includes(w))) return intent;
+      }
+    }
+  }
+  return null;
+}
+
+function findBestResponse(
+  input: string,
+  faqs: FAQ[],
+  biz: Business,
+  t: (key: string, params?: Record<string, string>) => string
+): string {
+  const intent = detectIntent(input);
+
+  // Greeting
+  if (intent === 'saludo') {
+    return t('chat.greeting', { name: biz.name });
   }
 
+  // Thanks
+  if (intent === 'gracias') {
+    return t('chat.thanks');
+  }
+
+  // Human escalation
+  if (intent === 'humano') {
+    return t('chat.humanEscalation');
+  }
+
+  // Location
+  if (intent === 'ubicacion') {
+    return biz.address
+      ? t('chat.locationWithAddress', { address: biz.address })
+      : t('chat.locationNoAddress');
+  }
+
+  // Try to match FAQ by intent
+  if (intent) {
+    const intentKeywords = intents[intent] || [];
+    for (const faq of faqs) {
+      if (!faq.is_active) continue;
+      const faqNorm = normalize(faq.question);
+      const faqWords = faqNorm.split(/\s+/);
+      const faqMatchesIntent = intentKeywords.some(kw =>
+        kw.includes(' ') ? faqNorm.includes(kw) : faqWords.some(w => w === kw || w.includes(kw) || kw.includes(w))
+      );
+      if (faqMatchesIntent) return faq.answer;
+    }
+  }
+
+  // Fuzzy match: try word overlap with FAQ questions
+  let bestScore = 0;
+  let bestAnswer = '';
   for (const faq of faqs) {
     if (!faq.is_active) continue;
-    const faqLower = faq.question.toLowerCase();
-    if (lower.includes(faqLower.slice(0, 15)) || faqLower.includes(lower.slice(0, 15))) return faq.answer;
-    for (const [, kws] of Object.entries(keywords)) {
-      const inputHas = kws.some(k => lower.includes(k));
-      const faqHas = kws.some(k => faqLower.includes(k));
-      if (inputHas && faqHas) return faq.answer;
+    const score = wordOverlapScore(input, faq.question);
+    if (score > bestScore) {
+      bestScore = score;
+      bestAnswer = faq.answer;
     }
   }
+  if (bestScore >= 0.3) return bestAnswer;
 
-  for (const k of keywords.reserva) {
-    if (lower.includes(k)) return t('chat.bookingIntent', { name: biz?.name || '' });
+  // Booking intent fallback
+  if (intent === 'reserva') {
+    return t('chat.bookingIntent', { name: biz.name });
   }
 
-  for (const k of keywords.ubicacion) {
-    if (lower.includes(k)) {
-      return biz?.address ? t('chat.locationWithAddress', { address: biz.address }) : t('chat.locationNoAddress');
-    }
+  // Menu/food intent
+  if (intent === 'menu') {
+    return t('chat.menuInfo', { name: biz.name });
   }
 
-  return null;
+  // Services intent
+  if (intent === 'servicio') {
+    return t('chat.servicesInfo', { name: biz.name });
+  }
+
+  // Generic fallback with helpful suggestions
+  return t('chat.noMatch');
 }
 
 const ChatWidget = ({ business, faqs, welcomeMessage, embedded = false }: ChatWidgetProps) => {
@@ -84,11 +200,10 @@ const ChatWidget = ({ business, faqs, welcomeMessage, embedded = false }: ChatWi
     setIsTyping(true);
 
     setTimeout(() => {
-      const match = findFAQMatch(input, faqs, business, t);
-      const response = match || t('chat.noMatch');
+      const response = findBestResponse(input, faqs, business, t);
       setMessages(prev => [...prev, { id: (Date.now() + 1).toString(), role: 'assistant', content: response }]);
       setIsTyping(false);
-    }, 800 + Math.random() * 800);
+    }, 600 + Math.random() * 600);
   };
 
   if (embedded) {
