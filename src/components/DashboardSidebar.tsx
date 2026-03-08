@@ -54,7 +54,7 @@ export function DashboardSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarGroup defaultOpen>
+        <SidebarGroup>
           <SidebarGroupLabel>Configuración</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
