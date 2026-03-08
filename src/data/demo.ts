@@ -1,4 +1,4 @@
-import { Business, FAQ, Service, Booking, Conversation, Message, BusinessHours, ChatbotSettings, Plan, DashboardMetrics } from '@/types';
+import { Business, FAQ, Service, Booking, Conversation, Message, BusinessHours, ChatbotSettings, DashboardMetrics } from '@/types';
 
 export const demoBusinesses: Business[] = [
   {
