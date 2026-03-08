@@ -1,4 +1,4 @@
-import { LayoutDashboard, MessageSquare, CalendarDays, HelpCircle, Bot, Settings, CreditCard, Store, LogOut } from 'lucide-react';
+import { LayoutDashboard, MessageSquare, CalendarDays, HelpCircle, Bot, Settings, Store, LogOut } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -24,7 +24,6 @@ export function DashboardSidebar() {
   const settingsItems = [
     { title: t('sidebar.chatbot'), url: '/dashboard/chatbot', icon: Bot },
     { title: t('sidebar.business'), url: '/dashboard/business', icon: Store },
-    { title: t('sidebar.billing'), url: '/dashboard/billing', icon: CreditCard },
     { title: t('sidebar.settings'), url: '/dashboard/settings', icon: Settings },
   ];
 

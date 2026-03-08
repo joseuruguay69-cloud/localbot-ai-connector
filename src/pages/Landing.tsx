@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MessageSquare, Calendar, Bot, ArrowRight, CheckCircle2, Star, Zap, Shield, Clock, Users, ChevronRight, Sparkles, Store, Scissors, UtensilsCrossed } from 'lucide-react';
-import { demoPlans } from '@/data/demo';
+
 import { useTranslation } from '@/i18n/context';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
@@ -27,7 +27,7 @@ const Landing = () => {
           <div className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
             <a href="#features" className="hover:text-foreground transition-colors">{t('nav.features')}</a>
             <a href="#how-it-works" className="hover:text-foreground transition-colors">{t('nav.howItWorks')}</a>
-            <a href="#pricing" className="hover:text-foreground transition-colors">{t('nav.pricing')}</a>
+            
             <a href="#verticals" className="hover:text-foreground transition-colors">{t('nav.verticals')}</a>
           </div>
           <div className="flex items-center gap-3">
@@ -181,46 +181,6 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* Pricing */}
-      <section id="pricing" className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">{t('pricing.title')}</h2>
-            <p className="text-muted-foreground text-lg">{t('pricing.subtitle')}</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            {demoPlans.map((plan) => (
-              <Card key={plan.id} className={`relative ${plan.is_popular ? 'border-primary shadow-glow' : ''}`}>
-                {plan.is_popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <Badge className="bg-gradient-primary text-primary-foreground px-3 py-0.5"><Star className="w-3 h-3 mr-1" /> {t('pricing.popular')}</Badge>
-                  </div>
-                )}
-                <CardContent className="p-6 pt-8">
-                  <h3 className="font-semibold text-lg">{plan.name}</h3>
-                  <div className="mt-3 mb-6">
-                    <span className="text-4xl font-bold">{plan.price_monthly === 0 ? t('pricing.free') : `€${plan.price_monthly}`}</span>
-                    {plan.price_monthly > 0 && <span className="text-muted-foreground text-sm">{t('pricing.month')}</span>}
-                  </div>
-                  <ul className="space-y-3 mb-6">
-                    {plan.features.map((f, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm">
-                        <CheckCircle2 className="w-4 h-4 text-accent mt-0.5 shrink-0" />
-                        <span className="text-muted-foreground">{f}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Link to="/signup">
-                    <Button className={`w-full ${plan.is_popular ? 'bg-gradient-primary text-primary-foreground hover:opacity-90' : ''}`} variant={plan.is_popular ? 'default' : 'outline'}>
-                      {plan.price_monthly === 0 ? t('pricing.startFree') : t('pricing.choosePlan')}
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Testimonials */}
       <section className="py-20 bg-secondary/30">

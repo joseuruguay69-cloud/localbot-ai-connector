@@ -100,16 +100,6 @@ export interface ChatbotSettings {
   collect_contact: boolean;
 }
 
-export interface Plan {
-  id: string;
-  name: string;
-  price_monthly: number;
-  messages_limit: number;
-  bookings_limit: number;
-  features: string[];
-  is_popular: boolean;
-}
-
 export interface DashboardMetrics {
   totalConversations: number;
   openConversations: number;
