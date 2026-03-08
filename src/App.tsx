@@ -15,7 +15,7 @@ import Bookings from "./pages/dashboard/Bookings";
 import FAQs from "./pages/dashboard/FAQs";
 import ChatbotSettings from "./pages/dashboard/ChatbotSettings";
 import BusinessSettings from "./pages/dashboard/BusinessSettings";
-import Billing from "./pages/dashboard/Billing";
+
 import SettingsPage from "./pages/dashboard/Settings";
 import NotFound from "./pages/NotFound";
 
