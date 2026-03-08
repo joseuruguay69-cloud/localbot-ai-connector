@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { MessageSquare, Calendar, Bot, ArrowRight, CheckCircle2, Star, Zap, Shield, Clock, Users, ChevronRight, Sparkles, Store, Scissors, UtensilsCrossed } from 'lucide-react';
-import { demoPlans } from '@/data/demo';
+
 import { useTranslation } from '@/i18n/context';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
