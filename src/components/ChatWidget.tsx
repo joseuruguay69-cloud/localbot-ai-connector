@@ -97,7 +97,7 @@ const ChatWidget = ({ business, faqs, welcomeMessage, embedded = false }: ChatWi
     setIsTyping(true);
 
     setTimeout(() => {
-      const match = findFAQMatch(input, faqs);
+      const match = findFAQMatch(input, faqs, business);
       const response = match || `Gracias por tu mensaje. No tengo una respuesta exacta para eso, pero puedo conectarte con nuestro equipo. ¿Te gustaría hablar con una persona?`;
       setMessages(prev => [...prev, { id: (Date.now() + 1).toString(), role: 'assistant', content: response }]);
       setIsTyping(false);
