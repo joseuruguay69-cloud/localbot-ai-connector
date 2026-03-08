@@ -60,7 +60,7 @@ function findFAQMatch(input: string, faqs: FAQ[], biz: Business): string | null 
   // Booking intent
   for (const k of keywords.reserva) {
     if (lower.includes(k)) {
-      return `¡Claro! Puedo ayudarte a hacer una reserva en ${business?.name || 'nuestro negocio'}. ¿Para qué día y hora te gustaría? También necesitaré tu nombre y teléfono para confirmar.`;
+      return `¡Claro! Puedo ayudarte a hacer una reserva en ${biz?.name || 'nuestro negocio'}. ¿Para qué día y hora te gustaría? También necesitaré tu nombre y teléfono para confirmar.`;
     }
   }
 
