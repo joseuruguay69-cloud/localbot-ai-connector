@@ -168,11 +168,6 @@ export const demoChatbotSettings: Record<string, ChatbotSettings> = {
   },
 };
 
-export const demoPlans: Plan[] = [
-  { id: 'plan-free', name: 'Starter', price_monthly: 0, messages_limit: 100, bookings_limit: 20, features: ['1 chatbot', 'FAQs básicas', '100 mensajes/mes', '20 reservas/mes'], is_popular: false },
-  { id: 'plan-pro', name: 'Profesional', price_monthly: 29, messages_limit: 1000, bookings_limit: 200, features: ['Chatbot personalizado', 'FAQs ilimitadas', '1.000 mensajes/mes', '200 reservas/mes', 'Widget personalizable', 'Métricas avanzadas'], is_popular: true },
-  { id: 'plan-business', name: 'Business', price_monthly: 79, messages_limit: 5000, bookings_limit: 1000, features: ['Todo de Profesional', '5.000 mensajes/mes', '1.000 reservas/mes', 'Integración WhatsApp', 'API acceso', 'Soporte prioritario', 'Multi-idioma'], is_popular: false },
-];
 
 export const demoMetrics: DashboardMetrics = {
   totalConversations: 147,
