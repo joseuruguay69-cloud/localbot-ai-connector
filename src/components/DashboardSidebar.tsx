@@ -36,7 +36,7 @@ export function DashboardSidebar() {
           {!collapsed && <span className="font-bold text-foreground">LocalBot AI</span>}
         </div>
 
-        <SidebarGroup defaultOpen>
+        <SidebarGroup>
           <SidebarGroupLabel>Principal</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
