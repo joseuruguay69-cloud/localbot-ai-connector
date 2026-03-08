@@ -67,7 +67,7 @@ function findFAQMatch(input: string, faqs: FAQ[], biz: Business): string | null 
   // Location
   for (const k of keywords.ubicacion) {
     if (lower.includes(k)) {
-      return business?.address ? `📍 Estamos en ${business.address}. ¡Te esperamos!` : 'Puedes encontrar nuestra dirección en nuestra página web.';
+      return biz?.address ? `📍 Estamos en ${biz.address}. ¡Te esperamos!` : 'Puedes encontrar nuestra dirección en nuestra página web.';
     }
   }
 
