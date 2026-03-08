@@ -19,7 +19,7 @@ interface ChatWidgetProps {
   embedded?: boolean;
 }
 
-function findFAQMatch(input: string, faqs: FAQ[]): string | null {
+function findFAQMatch(input: string, faqs: FAQ[], biz: Business): string | null {
   const lower = input.toLowerCase();
   const keywords: Record<string, string[]> = {
     horario: ['horario', 'hora', 'abierto', 'abre', 'cierra', 'cuando', 'atienden', 'abren'],
