@@ -7,16 +7,20 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Bot, ArrowLeft, UtensilsCrossed, Scissors, ArrowRight } from 'lucide-react';
 import ChatWidget from '@/components/ChatWidget';
 import { demoBusinesses, demoFAQs, demoChatbotSettings } from '@/data/demo';
+import { useTranslation } from '@/i18n/context';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 const Demo = () => {
+  const { t } = useTranslation();
   const [activeBiz, setActiveBiz] = useState('biz-1');
   const biz = demoBusinesses.find(b => b.id === activeBiz)!;
   const faqs = demoFAQs[activeBiz] || [];
   const settings = demoChatbotSettings[activeBiz];
 
+  const questions = activeBiz === 'biz-1' ? t('demo.q_restaurant') : t('demo.q_salon');
+
   return (
     <div className="min-h-screen bg-secondary/30">
-      {/* Header */}
       <div className="border-b bg-card">
         <div className="container mx-auto px-4 flex items-center justify-between h-14">
           <Link to="/" className="flex items-center gap-2">
@@ -26,21 +30,23 @@ const Demo = () => {
             <span className="font-bold text-foreground">LocalBot AI</span>
             <Badge variant="secondary" className="text-[10px]">Demo</Badge>
           </Link>
-          <Link to="/signup">
-            <Button size="sm" className="bg-gradient-primary text-primary-foreground hover:opacity-90">
-              Crear cuenta <ArrowRight className="ml-1 w-3.5 h-3.5" />
-            </Button>
-          </Link>
+          <div className="flex items-center gap-3">
+            <LanguageSwitcher />
+            <Link to="/signup">
+              <Button size="sm" className="bg-gradient-primary text-primary-foreground hover:opacity-90">
+                {t('demo.createAccount')} <ArrowRight className="ml-1 w-3.5 h-3.5" />
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
 
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2">Prueba el chatbot en vivo</h1>
-          <p className="text-muted-foreground">Selecciona un negocio de ejemplo y empieza a chatear</p>
+          <h1 className="text-3xl font-bold mb-2">{t('demo.title')}</h1>
+          <p className="text-muted-foreground">{t('demo.subtitle')}</p>
         </div>
 
-        {/* Business selector */}
         <div className="flex justify-center mb-8">
           <Tabs value={activeBiz} onValueChange={setActiveBiz}>
             <TabsList className="h-12">
@@ -55,7 +61,6 @@ const Demo = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          {/* Business info */}
           <div className="space-y-4">
             <Card className="shadow-soft">
               <CardContent className="p-6">
@@ -67,30 +72,18 @@ const Demo = () => {
                   </div>
                 </div>
                 <div className="space-y-2 text-sm">
-                  <div><span className="text-muted-foreground">📍 Dirección:</span> {biz.address}</div>
-                  <div><span className="text-muted-foreground">📞 Teléfono:</span> {biz.phone}</div>
-                  <div><span className="text-muted-foreground">✉️ Email:</span> {biz.email}</div>
+                  <div><span className="text-muted-foreground">📍 {t('demo.address')}:</span> {biz.address}</div>
+                  <div><span className="text-muted-foreground">📞 {t('demo.phone')}:</span> {biz.phone}</div>
+                  <div><span className="text-muted-foreground">✉️ {t('demo.emailLabel')}:</span> {biz.email}</div>
                 </div>
               </CardContent>
             </Card>
 
             <Card className="shadow-soft">
               <CardContent className="p-6">
-                <h3 className="font-semibold mb-3">💡 Prueba estas preguntas:</h3>
+                <h3 className="font-semibold mb-3">{t('demo.tryQuestions')}</h3>
                 <div className="space-y-2">
-                  {(activeBiz === 'biz-1' ? [
-                    '¿Tienen mesa para 4 hoy?',
-                    '¿Cuál es el horario?',
-                    '¿Tienen opciones vegetarianas?',
-                    'Quiero cambiar mi reserva',
-                    '¿Puedo hablar con una persona?',
-                  ] : [
-                    'Quiero turno para mañana',
-                    '¿Cuánto sale un corte?',
-                    '¿Atienden los sábados?',
-                    'Quiero cancelar mi cita',
-                    '¿Dónde están?',
-                  ]).map((q, i) => (
+                  {(questions as string[]).map((q: string, i: number) => (
                     <div key={i} className="text-sm text-muted-foreground bg-secondary/50 rounded-lg px-3 py-2">"{q}"</div>
                   ))}
                 </div>
@@ -98,17 +91,16 @@ const Demo = () => {
             </Card>
           </div>
 
-          {/* Chat */}
           <div className="h-[550px]" key={activeBiz}>
             <ChatWidget business={biz} faqs={faqs} welcomeMessage={settings.welcome_message} embedded />
           </div>
         </div>
 
         <div className="text-center mt-12">
-          <p className="text-muted-foreground mb-4">¿Te gusta lo que ves? Crea tu propio chatbot en minutos.</p>
+          <p className="text-muted-foreground mb-4">{t('demo.likeIt')}</p>
           <Link to="/signup">
             <Button size="lg" className="bg-gradient-primary text-primary-foreground hover:opacity-90">
-              Crear cuenta gratis <ArrowRight className="ml-2 w-4 h-4" />
+              {t('demo.ctaFree')} <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
           </Link>
         </div>
