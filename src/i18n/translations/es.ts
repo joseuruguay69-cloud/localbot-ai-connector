@@ -305,6 +305,10 @@ const es = {
   'chat.bookingIntent': '¡Claro! Puedo ayudarte a hacer una reserva en {name}. ¿Para qué día y hora te gustaría? También necesitaré tu nombre y teléfono para confirmar.',
   'chat.locationWithAddress': '📍 Estamos en {address}. ¡Te esperamos!',
   'chat.locationNoAddress': 'Puedes encontrar nuestra dirección en nuestra página web.',
+  'chat.greeting': '¡Hola! 👋 Bienvenido a {name}. ¿En qué puedo ayudarte? Puedes preguntarme sobre horarios, reservas, menú y más.',
+  'chat.thanks': '¡De nada! 😊 Si necesitas algo más, aquí estoy para ayudarte.',
+  'chat.menuInfo': '🍽️ En {name} ofrecemos una variada carta con opciones para todos los gustos. ¿Te gustaría hacer una reserva o tienes alguna pregunta específica sobre el menú?',
+  'chat.servicesInfo': '✨ En {name} ofrecemos diversos servicios profesionales. ¿Te gustaría conocer precios, disponibilidad o agendar una cita?',
 
   // 404
   'notFound.title': '404',
